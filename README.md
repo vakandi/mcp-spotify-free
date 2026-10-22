@@ -1,37 +1,24 @@
-# mcp-spotify-free
+<!-- Banner -->
+<p align="center">
+  <img src="https://raw.githubusercontent.com/vakandi/mcp-spotify-free/main/.assets/banner.png" alt="mcp-spotify-free — Spotify for free accounts" width="100%">
+</p>
 
-**Spotify for free accounts — as an MCP server.**
-Read your *Liked Songs* library, search the whole catalog, and drive playback
-on **any** Spotify Connect device (Chromecast, TV, phone, the desktop app) —
-no Premium subscription, no OAuth app, no password.
+<!-- Tagline -->
+<p align="center">
+  <strong>Spotify for free accounts — as an MCP server.</strong><br>
+  Read your <em>Liked Songs</em>, search the whole catalog, and drive playback on
+  <strong>any</strong> Spotify Connect device (Chromecast, TV, phone, desktop). No Premium.
+</p>
 
-```
-
-## Quick Start
-
-### npx (recommended)
-```bash
-npx mcp-spotify-free
-```
-
-### npm install (global)
-```bash
-npm install -g mcp-spotify-free
-mcp-spotify-free
-```
-
-### From source
-```bash
-cd ~/Documents/mcp-spotify-free
-python3 -m pip install -r requirements.txt
-python3 server.py login
-```
-
-open.spotify.com  ──cookies──▶  /api/token  ──▶  access token
-                                                       │
-                            pathfinder/v2/query  ◀────┤  library + catalog search
-                            connect-state/...     ◀────┘  play / pause / volume / device switch
-```
+<!-- Badges -->
+<p align="center">
+  <a href="https://github.com/vakandi/mcp-spotify-free"><img src="https://img.shields.io/badge/version-1.1.1-8B5CF6?style=flat-square" alt="Version"></a>
+  <a href="https://www.npmjs.com/package/mcp-spotify-free"><img src="https://img.shields.io/npm/v/mcp-spotify-free?style=flat-square&color=3B82F6" alt="npm"></a>
+  <a href="https://github.com/vakandi/mcp-spotify-free/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-22C55E?style=flat-square" alt="License"></a>
+  <a href="https://github.com/vakandi/mcp-spotify-free"><img src="https://img.shields.io/badge/python-3.10+-3B82F6?style=flat-square" alt="Python"></a>
+  <a href="https://github.com/vakandi/mcp-spotify-free"><img src="https://img.shields.io/badge/platform-macOS-64748B?style=flat-square" alt="Platform"></a>
+  <a href="https://github.com/vakandi/mcp-spotify-free"><img src="https://img.shields.io/badge/PRs-welcome-EC4899?style=flat-square" alt="PRs Welcome"></a>
+</p>
 
 ---
 
@@ -51,6 +38,31 @@ uses, so a free account gets:
   albums, playlists, profiles), so any song can be played, not only the liked ones
 - real playback control — play, pause, skip, volume
 - **device switching** — send the sound to the Chromecast instead of the laptop
+
+---
+
+## Quick Start
+
+### npx (recommended)
+
+```bash
+npx mcp-spotify-free
+```
+
+### npm install (global)
+
+```bash
+npm install -g mcp-spotify-free
+mcp-spotify-free
+```
+
+### From source
+
+```bash
+cd ~/Documents/mcp-spotify-free
+python3 -m pip install -r requirements.txt
+python3 server.py login
+```
 
 ---
 
@@ -117,46 +129,38 @@ subscription and leaves a visible ghost for hours).
 
 ---
 
-## Install
+## IDE Integration
 
-```bash
-cd ~/Documents/mcp-spotify-free
-python3 -m pip install -r requirements.txt
-```
-
-or straight from npm (the launcher installs the Python deps by itself):
-
-```bash
-npx mcp-spotify-free login
-```
-
-**Capture the session** (only needed once, and again when Spotify expires it):
-
-```bash
-python3 server.py login          # opens open.spotify.com, waits for the session
-python3 server.py status         # session + liked count + devices
-```
-
-If Chromium keeps the session cookie in memory, quit the browser (Cmd+Q) so
-the cookie is flushed to disk — the login command keeps polling and picks it
-up on its own.
-
----
-
-## Connect it to an MCP client
+### Cursor / Windsurf / VS Code
 
 ```json
 {
   "mcpServers": {
     "spotify-free": {
-      "command": "python3",
-      "args": ["/Users/vakandi/Documents/mcp-spotify-free/server.py"],
-      "env": {
-        "SPOTIFY_BROWSER": "edge"
-      }
+      "command": "npx",
+      "args": ["mcp-spotify-free"]
     }
   }
 }
+```
+
+### Claude Desktop
+
+```json
+{
+  "mcpServers": {
+    "spotify-free": {
+      "command": "npx",
+      "args": ["mcp-spotify-free"]
+    }
+  }
+}
+```
+
+### OpenCode / Claude Code
+
+```bash
+claude mcp add spotify-free --scope user -- npx mcp-spotify-free
 ```
 
 ### Through `mcp-cli` (this machine)
@@ -170,53 +174,6 @@ mcp-cli call spotify-free spotify_status '{}'               # account + devices
 mcp-cli call spotify-free play_song '{"query":"one more time","device":"Chromecast"}'
 mcp-cli call spotify-free cleanup_devices '{}'              # drop leftover devices
 ```
-
----
-
-## IDE Integration
-
-### Cursor / Windsurf / VS Code
-```json
-{
-  "mcpServers": {
-    "spotify-free": {
-      "command": "npx",
-      "args": ["mcp-spotify-free"]
-    }
-  }
-}
-```
-
-### Claude Desktop
-```json
-{
-  "mcpServers": {
-    "spotify-free": {
-      "command": "npx",
-      "args": ["mcp-spotify-free"]
-    }
-  }
-}
-```
-
-### OpenCode / Claude Code
-```bash
-claude mcp add spotify-free --scope user -- npx mcp-spotify-free
-```
-
-## Requirements
-
-- macOS (the cookie decryption uses the login keychain)
-- A browser (Edge by default, Chrome/Brave/Vivaldi/Opera supported) with an
-  active `open.spotify.com` session
-- Python 3.10+
-
-Environment variables:
-
-- `SPOTIFY_BROWSER` — `edge` (default), `chrome`, `brave`, `vivaldi`, `opera`
-- `SPOTIFY_COOKIES_FILE` — path to a JSON file of cookies (bypasses the browser)
-- `SPOTIFY_USE_PROXY` — set to `1` to send traffic through the system proxy
-  (off by default: the local `proxy-local` plugin only carries LLM traffic)
 
 ---
 
@@ -284,6 +241,40 @@ python3 examples/quickstart.py
 
 ---
 
+## Requirements
+
+| Item | Detail |
+|------|--------|
+| OS | macOS (cookie decryption uses the login keychain) |
+| Browser | Edge by default; Chrome, Brave, Vivaldi, Opera supported — must have an active `open.spotify.com` session |
+| Python | 3.10+ |
+
+Environment variables:
+
+- `SPOTIFY_BROWSER` — `edge` (default), `chrome`, `brave`, `vivaldi`, `opera`
+- `SPOTIFY_COOKIES_FILE` — path to a JSON file of cookies (bypasses the browser)
+- `SPOTIFY_USE_PROXY` — set to `1` to send traffic through the system proxy
+  (off by default: the local `proxy-local` plugin only carries LLM traffic)
+
+---
+
+## Architecture
+
+```
+mcp-spotify-free/
+├── server.py               FastMCP server + all tool definitions
+├── spotify_free/
+│   ├── client.py           token, library, catalog search, devices, playback
+│   ├── cookies.py          Chromium cookie decryption (macOS keychain)
+│   ├── session.py          session capture / storage / validation
+│   └── totp.py             web-player TOTP (de-obfuscation + auto-discovery)
+├── examples/quickstart.py  dependency-free demo
+├── requirements.txt
+└── pyproject.toml
+```
+
+---
+
 ## Privacy & terms
 
 - Cookies are read from your own machine and decrypted locally. They are never
@@ -314,20 +305,11 @@ python3 examples/quickstart.py
 - **Keychain prompt on first run** — macOS asks once to let `security` read the
   browser's *Safe Storage* item.
 
-## Layout
+---
 
-```
-mcp-spotify-free/
-├── server.py               FastMCP server + all tool definitions
-├── spotify_free/
-│   ├── client.py           token, library, catalog search, devices, playback
-│   ├── cookies.py          Chromium cookie decryption (macOS keychain)
-│   ├── session.py          session capture / storage / validation
-│   └── totp.py             web-player TOTP (de-obfuscation + auto-discovery)
-├── examples/quickstart.py  dependency-free demo
-├── requirements.txt
-└── pyproject.toml
-```
+## Contributing
+
+PRs welcome. Open an issue first for non-trivial changes.
 
 ## License
 
