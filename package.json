@@ -41,5 +41,13 @@
   ],
   "scripts": {
     "postinstall": "node postinstall.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vakandi/mcp-spotify-free.git"
+  },
+  "homepage": "https://github.com/vakandi/mcp-spotify-free#readme",
+  "bugs": {
+    "url": "https://github.com/vakandi/mcp-spotify-free/issues"
   }
 }
