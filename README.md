@@ -39,6 +39,28 @@ uses, so a free account gets:
 - real playback control — play, pause, skip, volume
 - **device switching** — send the sound to the Chromecast instead of the laptop
 
+### Every other Spotify MCP server needs Premium (checked October 2026)
+
+A sweep of the MCP registries and PyPI/GitHub found no other Spotify MCP
+server that works on a plain free account. They all go through the official
+Spotify Web API, which means a registered developer app + OAuth, and playback
+is Premium-only — before Spotify tightened the API in February 2026, where the
+app **owner must now hold Premium** and Dev Mode apps are capped at 5
+authorized users. For example, quoting their own docs:
+
+- `marcelmarais/spotify-mcp-server` — prerequisites: "A Spotify Premium
+  account" + "A registered Spotify Developer application"
+- `mcp-spotify` (PyPI) — "A Spotify Premium account (required by Spotify for
+  Web API access)"
+- `jamiew/spotify-mcp` — "Requires a Spotify Premium account"
+- `mcp-server-spotify` (PyPI) / `leoalord/spotify-mcp-server` /
+  `iceener/spotify-streamable-mcp-server` — bring your own developer app
+  (client ID + secret + OAuth), Premium required for playback since Feb 2026
+
+This server needs none of that: no developer app, no OAuth callback, no
+client secret, no Premium. It reads the session cookies of a browser where
+you are already logged in and speaks the web player's own protocol.
+
 ---
 
 ## Quick Start
