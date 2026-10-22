@@ -46,21 +46,67 @@ def get_client() -> SpotifyFreeClient:
     return _client
 
 
+def _session_remedy(exc: Exception) -> dict[str, Any] | None:
+    """Detect a session/cookie failure and describe how the agent fixes it.
+
+    Returns None for everything else (network, device, search errors...).
+    """
+    text = f"{type(exc).__name__}: {exc}"
+    low = text.lower()
+    auth = (
+        "cookieerror" in low
+        or "cookie" in low
+        or "log in to open.spotify" in low
+        or "(401)" in text
+        or "(403)" in text
+    )
+    if not auth:
+        return None
+    popup = (
+        'mcp-cli call macos-popup show_popup '
+        '\'{"title":"Spotify","message":"Ta session Spotify a expire - '
+        'connecte-toi a open.spotify.com pour que je puisse mettre de la '
+        'musique.","level":"warning","duration":18000}\''
+    )
+    return {
+        "session_expired": True,
+        "hint": "Spotify cookies invalid or expired. The user must (re)log in "
+        "before any music tool can work.",
+        "how_to_fix": [
+            "1. Tell the user WHY nothing plays - show a macOS popup:",
+            f"   {popup}",
+            "2. Open the login page in the default browser:",
+            "   open https://open.spotify.com",
+            "3. Once the user has logged in, re-login and RETRY the original call:",
+            "   mcp-cli call spotify-free spotify_login '{}'",
+        ],
+        "login_url": "https://open.spotify.com",
+        "login_command": "mcp-cli call spotify-free spotify_login '{}'",
+    }
+
+
 def _guard(func):
     """Turn exceptions into a structured error payload."""
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        caught: Exception
         try:
             return func(*args, **kwargs)
         except SpotifyError as exc:
-            return {"ok": False, "error": str(exc), "action": func.__name__}
+            caught = exc
+            payload = {"ok": False, "error": str(exc), "action": func.__name__}
         except Exception as exc:  # noqa: BLE001
-            return {
+            caught = exc
+            payload = {
                 "ok": False,
                 "error": f"{type(exc).__name__}: {exc}",
                 "action": func.__name__,
             }
+        remedy = _session_remedy(caught)
+        if remedy:
+            payload["remedy"] = remedy
+        return payload
 
     return wrapper
 

@@ -205,7 +205,12 @@ mcp-cli call spotify-free cleanup_devices '{}'              # drop leftover devi
 - **`spotify_login()`** / **`spotify_logout()`** — capture / forget the session.
 
 Every tool returns a structured payload: `ok`, `action`, plus the relevant
-data — and on failure `error` with a human-readable cause.
+data — and on failure `error` with a human-readable cause. When the failure is
+the session (bad or expired browser cookies, `401` / `403` from the token
+endpoints), the payload also carries a `remedy` block with paste-ready
+commands for the agent: show a macOS popup explaining the login is needed,
+open `https://open.spotify.com` in the default browser, run
+`spotify_login()`, then retry the original call.
 
 ### Typical agent flow
 
@@ -292,6 +297,11 @@ mcp-spotify-free/
 
 ## Troubleshooting
 
+- **Any session/cookie failure (`401`, `403`, `no spotify cookies found`)** —
+  the failing tool returns a `remedy` field instead of a dead error: it tells
+  the calling agent to show the user a macOS popup ("log in so music can play"),
+  to open `open.spotify.com` in the default browser, to `spotify_login()` and
+  retry. Nothing else to do by hand.
 - **`no spotify cookies found`** — log in to `open.spotify.com` in the browser
   named by `SPOTIFY_BROWSER`, then retry.
 - **`token request failed (400)`** — the TOTP version moved on; the server
