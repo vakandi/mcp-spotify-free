@@ -1,0 +1,21 @@
+[project]
+name = "mcp-spotify-free"
+version = "1.1.0"
+description = "MCP server for Spotify free accounts: Liked Songs library + playback on any Spotify Connect device (Chromecast, MacBook, TVs)"
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.31",
+    "cryptography>=41.0",
+    "fastmcp>=2.0",
+]
+
+[project.scripts]
+mcp-spotify-free = "server:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["spotify_free"]
+py-modules = ["server"]

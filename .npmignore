@@ -1,0 +1,15 @@
+.git/
+.github/
+__pycache__/
+*.pyc
+*.pyo
+.env
+.env.*
+venv/
+.venv/
+node_modules/
+*.tgz
+.codegraph/
+omo/
+.ruff_cache/
+.playwright-mcp/

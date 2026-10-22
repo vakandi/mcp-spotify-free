@@ -1,0 +1,103 @@
+#!/usr/bin/env node
+"use strict";
+
+/**
+ * mcp-spotify-free - npx launcher.
+ *
+ * Finds a Python 3.10+ interpreter, makes sure the runtime dependencies are
+ * installed, then starts the MCP server (or one of the CLI subcommands:
+ * login / logout / status / doctor).
+ */
+
+const { execSync, spawn } = require("child_process");
+const path = require("path");
+const fs = require("fs");
+
+const ROOT = path.resolve(__dirname, "..");
+const PYTHON_SCRIPT = path.join(ROOT, "server.py");
+const NAME = "mcp-spotify-free";
+
+function log(msg) {
+  process.stderr.write(`\x1b[36m[${NAME}]\x1b[0m ${msg}\n`);
+}
+
+function warn(msg) {
+  process.stderr.write(`\x1b[33m[${NAME}]\x1b[0m ${msg}\n`);
+}
+
+function findPython() {
+  for (const cmd of ["python3", "python"]) {
+    try {
+      const out = execSync(`${cmd} -c "import sys; print(sys.version_info[0], sys.version_info[1])"`, {
+        encoding: "utf-8",
+        timeout: 5000,
+        stdio: ["pipe", "pipe", "pipe"],
+      }).trim();
+      const [major, minor] = out.split(/\s+/).map(Number);
+      if (major >= 3 && minor >= 10) return cmd;
+    } catch {
+      continue;
+    }
+  }
+  return null;
+}
+
+function depsInstalled(python) {
+  try {
+    execSync(`${python} -c "import fastmcp, requests, cryptography"`, {
+      stdio: "ignore",
+      timeout: 8000,
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function ensureDeps(python) {
+  if (depsInstalled(python)) return true;
+  log("Installing Python dependencies (one-time)...");
+  try {
+    execSync(
+      `${python} -m pip install --quiet --no-warn-script-location --disable-pip-version-check "fastmcp>=2.0" "requests>=2.31" "cryptography>=41.0"`,
+      { stdio: ["ignore", "pipe", "pipe"], timeout: 240000 }
+    );
+    log("Dependencies installed ✓");
+    return depsInstalled(python);
+  } catch (err) {
+    warn("pip install failed - run: pip install fastmcp requests cryptography");
+    return false;
+  }
+}
+
+function main() {
+  if (process.platform !== "darwin") {
+    warn(
+      "This server reads browser cookies through the macOS keychain - macOS only " +
+        "(use SPOTIFY_COOKIES_FILE with a cookie JSON to run it elsewhere)."
+    );
+  }
+  const python = findPython();
+  if (!python) {
+    process.stderr.write("Python 3.10+ is required (python3 not found in PATH)\n");
+    process.exit(1);
+  }
+  if (!fs.existsSync(PYTHON_SCRIPT)) {
+    process.stderr.write(`Entry point not found: ${PYTHON_SCRIPT}\n`);
+    process.exit(1);
+  }
+  if (!ensureDeps(python)) process.exit(1);
+
+  const child = spawn(python, [PYTHON_SCRIPT, ...process.argv.slice(2)], {
+    stdio: "inherit",
+    cwd: ROOT,
+    env: process.env,
+  });
+  child.on("error", (err) => {
+    process.stderr.write(`Failed to start: ${err.message}\n`);
+    process.exit(1);
+  });
+  child.on("exit", (code) => process.exit(code === null ? 1 : code));
+}
+
+main();

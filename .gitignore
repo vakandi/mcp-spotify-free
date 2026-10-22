@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+.ruff_cache/
+.playwright-mcp/
+*.tgz
+node_modules/
+.env
+.env.*
+.venv/
+venv/
+.DS_Store

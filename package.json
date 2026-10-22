@@ -1,0 +1,45 @@
+{
+  "name": "mcp-spotify-free",
+  "version": "1.1.0",
+  "description": "MCP server for Spotify FREE accounts: read your Liked Songs library and control playback on any Spotify Connect device (Chromecast, MacBook, TV) - no Premium required",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "npx",
+    "claude-desktop",
+    "cursor",
+    "spotify",
+    "spotify-free",
+    "liked-songs",
+    "chromecast",
+    "spotify-connect",
+    "macos"
+  ],
+  "author": "Wael Bousfira",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "mcp-spotify-free": "bin/mcp-spotify-free"
+  },
+  "files": [
+    "bin/",
+    "postinstall.js",
+    "spotify_free/",
+    "!spotify_free/__pycache__/",
+    "!spotify_free/**/__pycache__/",
+    "server.py",
+    "examples/",
+    "!examples/__pycache__/",
+    "requirements.txt",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "postinstall": "node postinstall.js"
+  }
+}
