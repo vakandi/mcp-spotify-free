@@ -27,6 +27,7 @@
     "mcp-spotify-free": "bin/mcp-spotify-free"
   },
   "files": [
+    ".assets/",
     "bin/",
     "postinstall.js",
     "spotify_free/",
