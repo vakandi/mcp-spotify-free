@@ -1,6 +1,6 @@
 <!-- Banner -->
 <p align="center">
-  <img src="https://raw.githubusercontent.com/vakandi/mcp-spotify-free/main/.assets/banner.png" alt="mcp-spotify-free — Spotify for free accounts" width="100%">
+  <img src="./.assets/banner.png" alt="mcp-spotify-free — Spotify for free accounts" width="100%">
 </p>
 
 <!-- Tagline -->
