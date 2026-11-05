@@ -12,7 +12,7 @@
 
 <!-- Badges -->
 <p align="center">
-  <a href="https://github.com/vakandi/mcp-spotify-free"><img src="https://img.shields.io/badge/version-1.1.1-8B5CF6?style=flat-square" alt="Version"></a>
+  <a href="https://github.com/vakandi/mcp-spotify-free"><img src="https://img.shields.io/badge/version-1.1.2-8B5CF6?style=flat-square" alt="Version"></a>
   <a href="https://www.npmjs.com/package/mcp-spotify-free"><img src="https://img.shields.io/npm/v/mcp-spotify-free?style=flat-square&color=3B82F6" alt="npm"></a>
   <a href="https://github.com/vakandi/mcp-spotify-free/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-22C55E?style=flat-square" alt="License"></a>
   <a href="https://github.com/vakandi/mcp-spotify-free"><img src="https://img.shields.io/badge/python-3.10+-3B82F6?style=flat-square" alt="Python"></a>
